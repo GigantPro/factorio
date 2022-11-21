@@ -46,5 +46,3 @@ class Core:
 
             last_frame_time = datetime.now() - star_time
             last_frame_time = last_frame_time.total_seconds()
-
-Core().start_game()
