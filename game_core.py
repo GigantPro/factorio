@@ -34,15 +34,9 @@ class Core:
         self.game_run_thread = Thread(target=self._game_run).run()
     
     def _game_run(self):
-        last_frame_time = 1
         while not self.flag_stop_game_thread:
-            star_time = datetime.now()
-            print(last_frame_time)
+            delta_time = self.p_clock.tick(self.fps)
 
-            self.player.keyboard_move(last_frame_time)
+            self.player.keyboard_move(delta_time)
             self.camera.draw_map()
-
-            self.p_clock.tick(self.fps)
-
-            last_frame_time = datetime.now() - star_time
-            last_frame_time = last_frame_time.total_seconds()
+        return

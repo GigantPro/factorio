@@ -37,10 +37,10 @@ class Player:
                     self.move_down = False
         
         if self.move_right:
-            self.x += self.speed * last_frame_time
+            self.x += self.speed / last_frame_time
         if self.move_left:
-            self.x -= self.speed * last_frame_time
+            self.x -= self.speed / last_frame_time
         if self.move_down:
-            self.y -= self.speed * last_frame_time
+            self.y -= self.speed / last_frame_time
         if self.move_up:
-            self.y += self.speed * last_frame_time
+            self.y += self.speed / last_frame_time

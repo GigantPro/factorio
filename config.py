@@ -1,5 +1,5 @@
-chunk_size  = 100
+chunk_size  = 50
 zoom        = 1
-speed       = 70
+speed       = 15
 fps         = 60
 debug       = True
