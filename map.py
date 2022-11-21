@@ -39,5 +39,6 @@ class Map:
         dir_path = f"{os.environ['APPDATA']}\\GigantPro"
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
+            
         with open(f'{dir_path}\\saves\\{self.seed}.json') as f:
             json.dump(f, map)
