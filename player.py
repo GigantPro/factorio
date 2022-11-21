@@ -36,12 +36,12 @@ class Player:
                 elif event.key == pygame.K_DOWN:
                     self.move_down = False
             elif event.type == pygame.MOUSEWHEEL:
-                if self.zoom <= 3 and event.y > 0:
-                    self.zoom = self.zoom - 0.1 * event.y
-                elif self.zoom >= 0.25 and event.y < 0:
+                if self.zoom <= 3 and event.y < 0:
                     self.zoom = self.zoom + 0.1
-                if self.zoom < 0.25:
-                    self.zoom = 0.25
+                elif self.zoom >= 0.5 and event.y > 0:
+                    self.zoom = self.zoom - 0.1
+                if self.zoom < 0.5:
+                    self.zoom = 0.5
         
         if self.move_right:
             self.x += self.speed / deltatime
