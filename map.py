@@ -17,8 +17,10 @@ class Map:
             5: 'grass'
         }
     
-    def create_first_big_chunk(self):
-        pass
+    # def create_first_big_chunk(self):
+    #     _map = {}
+    #     for x in range(x1, x2 + 1, config.chunk_size):
+    #         for y in range(y1, y2 + 1, config.chunk_size):
 
     def return_generation_chunks_with_coords(self, x1, y1, x2, y2, chanse):
         mp = {}

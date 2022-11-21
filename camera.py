@@ -18,24 +18,25 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x = math.ceil(self.player.x - self.w / 2 / self.player.zoom)
-        self.start_pos_y = math.ceil(self.player.y - self.h / 2 / self.player.zoom)
-        self.end_pos_x   = math.ceil(self.player.x + self.w / 2 / self.player.zoom)
-        self.end_pos_y   = math.ceil(self.player.y + self.h / 2 / self.player.zoom)
+        self.start_pos_x = math.ceil(self.player.x - self.w / 2)
+        self.start_pos_y = math.ceil(self.player.y - self.h / 2)
+        self.end_pos_x   = math.ceil(self.player.x + self.w / 2)
+        self.end_pos_y   = math.ceil(self.player.y + self.h / 2)
 
-        mp = self.mp.return_generation_chunks_with_coords(
-            self.start_pos_x // config.chunk_size * config.chunk_size,
-            self.start_pos_y // config.chunk_size * config.chunk_size,
-            self.end_pos_x   // config.chunk_size * config.chunk_size,
-            self.end_pos_y   // config.chunk_size * config.chunk_size,
-            {
-                (0, 0.7): 'grass',
-                (0.7, 0.8): 'iron',
-                (0.8, 0.85): 'cuprum',
-                (0.85, 1): 'ground'
-            }
-        )
-        self._draw_map(mp)
+        # mp = self.mp.return_generation_chunks_with_coords(
+        #     self.start_pos_x // config.chunk_size * config.chunk_size,
+        #     self.start_pos_y // config.chunk_size * config.chunk_size,
+        #     self.end_pos_x   // config.chunk_size * config.chunk_size,
+        #     self.end_pos_y   // config.chunk_size * config.chunk_size,
+        #     {
+        #         (0, 0.7): 'grass',
+        #         (0.7, 0.8): 'iron',
+        #         (0.8, 0.85): 'cuprum',
+        #         (0.85, 1): 'ground'
+        #     }
+        # )
+        # self._draw_map(mp)
+
         if self.core.debug:
             self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
         
@@ -45,11 +46,11 @@ class Camera:
 
     def draw_grid_chunks(self, start_pos_x, start_pos_y, end_pos_x, end_pos_y):
         for x in range(start_pos_x, end_pos_x + 1):
-            if abs(x % config.chunk_size) == 0:
+            if x % (config.chunk_size // self.player.zoom) == 0:
                 coord = (abs(x - start_pos_x) * config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [coord, 0], [coord, self.h])
         for y in range(start_pos_y, end_pos_y + 1):
-            if abs(y % config.chunk_size) == 0:
+            if abs(y % (config.chunk_size // self.player.zoom)) == 0:
                 coord = (abs(y - end_pos_y) * config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
