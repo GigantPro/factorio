@@ -22,8 +22,8 @@ class Camera:
         end_pos_x   = math.ceil(self.player.x + self.w / 2 / self.player.zoom)
         end_pos_y   = math.ceil(self.player.y + self.h / 2 / self.player.zoom)
 
-        # if self.core.debug:
-        self.draw_grid_chunks(start_pos_x, start_pos_y, end_pos_x, end_pos_y)
+        if self.core.debug:
+            self.draw_grid_chunks(start_pos_x, start_pos_y, end_pos_x, end_pos_y)
         
         self.draw_player()
 

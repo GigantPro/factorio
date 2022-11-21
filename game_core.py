@@ -8,7 +8,7 @@ import config
 
 
 class Core:
-    def __init__(self, W: int=None, H: int=None, debug: bool=True, fps: int=config.fps) -> None:
+    def __init__(self, W: int=None, H: int=None, debug: bool=config.debug, fps: int=config.fps) -> None:
         self.debug = debug
         self.fps = fps
         
