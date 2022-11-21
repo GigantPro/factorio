@@ -24,8 +24,11 @@ class Core:
         self.p_clock = pygame.time.Clock()
 
         self.player = Player(0, 0, config.speed, config.zoom)
-        self.map = Map()
-        self.camera = Camera(self.sc, self, self.player)
+        if config.seed:
+            self.map = Map(config.seed)
+        else:
+            self.map = Map()
+        self.camera = Camera(self.sc, self, self.player, self.map)
         
         self.last_frame_delta = 1
     
