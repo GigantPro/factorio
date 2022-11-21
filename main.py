@@ -74,13 +74,13 @@ while True:
     if move_up:
         player['y'] += player['speed']
     
-    # print(unit_wh)
+    # Start monitor position on coords
     start_pos_x = math.ceil(player['x'] - W / 2 / player['zoom'])
     start_pos_y = math.ceil(player['y'] - H / 2 / player['zoom'])
     end_pos_x   = math.ceil(player['x'] + W / 2 / player['zoom'])
     end_pos_y   = math.ceil(player['y'] + H / 2 / player['zoom'])
 
-    if DEBUG_LINES:
+    if DEBUG_LINES: 
         for x in range(start_pos_x, end_pos_x + 1):
             if abs(x % mp['unit_size']) == 0:
                 coord = (abs(x - start_pos_x) * player['zoom'])
