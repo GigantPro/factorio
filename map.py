@@ -6,14 +6,16 @@ from perlin_noise import PerlinNoise
 from pprint import pprint
 
 
+
+
 class Map:
     def __init__(self, seed: int = random.randint(10000, 1000000)) -> None:
         self.seed = seed
         self.resources = {
-            '1': (-1, 0),  # ground
-            '2': (0, 0.1),  # iron
-            '3': (0.1, 0.2),  # copper
-            '4': (0, 2, 0.35),  # coal
+            '1': (-1,   0),  # ground
+            '2': (0,    0.1),  # iron
+            '3': (0.1,  0.2),  # copper
+            '4': (0.2,  0.35),  # coal
             '5': (0.35, 1)  # water
         }
 
@@ -57,10 +59,21 @@ class Map:
         # dir_path = f"/maps"
         # if not os.path.exists(dir_path):
         #     os.makedirs(dir_path)
-
-        with open(f'{self.seed}.txt', 'w') as f:
-            f.write(str(map))
+        new_map = {}
+        for i in map:
+            new_map[f'{i[0]}\0{i[1]}'] = map[i]
+        with open(f'{self.seed}.json', 'w') as f:
+            json.dump(new_map, f, indent=2)
 
 
 nm = Map()
 nm.create_chunk(0, 0)
+
+Map().method(camera_obj)
+
+'''
+1) Получить xy игрока
+2) Получить размер моника
+3) Какие чанки нужно сгенерировать и какие есть
+4) Записать в переменную карту
+'''
