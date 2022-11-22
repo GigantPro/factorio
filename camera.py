@@ -1,4 +1,5 @@
 import math
+import random
 import pygame
 from player import Player
 import config
@@ -14,7 +15,9 @@ class Camera:
 
         self.h = self.sc.get_height()
         self.w = self.sc.get_width()
-    
+
+        self.player_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
@@ -46,16 +49,16 @@ class Camera:
 
     def draw_grid_chunks(self, start_pos_x, start_pos_y, end_pos_x, end_pos_y):
         for x in range(start_pos_x, end_pos_x + 1):
-            if x % (config.chunk_size // self.player.zoom) == 0:
+            if x % (config.chunk_size * self.player.zoom) == 0:
                 coord = (abs(x - start_pos_x) * config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [coord, 0], [coord, self.h])
         for y in range(start_pos_y, end_pos_y + 1):
-            if abs(y % (config.chunk_size // self.player.zoom)) == 0:
-                coord = (abs(y - end_pos_y) * config.zoom)
+            if abs(y % (config.chunk_size * self.player.zoom)) == 0:
+                coord = (abs(y - end_pos_y) / config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
     def draw_player(self):
-        pygame.draw.rect(self.sc, (100, 100, 100), (self.w / 2 - 5, self.h / 2 - 10, 25, 50))  
+        pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
     
     def _draw_map(self, mp):
         for x, y in mp:
@@ -63,8 +66,11 @@ class Camera:
                 pygame.draw.rect(self.sc, (0, 255, 0), 
                         ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
             elif mp[(x, y)] == 'iron':
-                pass
+                pygame.draw.rect(self.sc, (200, 200, 200), 
+                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
             elif mp[(x, y)] == 'cuprum':
-                pass
+                pygame.draw.rect(self.sc, (221, 106, 11), 
+                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
             elif mp[(x, y)] == 'ground':
-                pass
+                pygame.draw.rect(self.sc, (77, 45, 0), 
+                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
