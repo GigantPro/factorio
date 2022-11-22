@@ -1,51 +1,66 @@
-import numpy
+import os
 import random
-import pygame
+import config
+import json
+from perlin_noise import PerlinNoise
+from pprint import pprint
 
 
-class MapGenerator:
-    def __init__(self):
-        self.ground_image = pygame.image.load('resourses/ground.png').convert()
-        self.coal_image = pygame.image.load('resourses/coal.png').convert()
-        self.tree_image = pygame.image.load('resourses/tree.png').convert()
-        self.iron_image = pygame.image.load('resourses/iron.png').convert()
-        # добавить все текстуры
+class Map:
+    def __init__(self, seed: int = random.randint(10000, 1000000)) -> None:
+        self.seed = seed
+        self.resources = {
+            '1': (-1, 0),  # ground
+            '2': (0, 0.1),  # iron
+            '3': (0.1, 0.2),  # copper
+            '4': (0, 2, 0.35),  # coal
+            '5': (0.35, 1)  # water
+        }
 
-    def generate_arr(self):
-        point_arr = numpy.zeros([1000, 1000], numpy.uint16)
-        for i in range(1000):
-            for x in range(len(point_arr[i])):
-                if random.random() <= 0.15:
-                    point_arr[i][x] = 1
-                elif 0.9 <= random.random() < 0.95:
-                    point_arr[i][x] = 2
-                elif 0.89 <= random.random() < 0.9:
-                    point_arr[i][x] = 3
+    def create_chunk(self, left, top):
+        noise1 = PerlinNoise(octaves=3, seed=self.seed)
+        noise2 = PerlinNoise(octaves=6, seed=self.seed)
+        noise3 = PerlinNoise(octaves=12, seed=self.seed)
 
-        return point_arr
+        size = config.big_chunk_size
+        values = {}
+        for i in range(size):
+            for j in range(size):
+                noise_val = noise1([i / size, j / size])
+                noise_val += 0.5 * noise2([i / size, j / size])
+                noise_val += 0.25 * noise3([i / size, j / size])
 
-    def draw_map(self, screen):
-        arr = self.generate_arr()
-        color = [self.ground_image,self.tree_image,self.coal_image, self.iron_image]
-        for x in range(len(arr)):
-            for y in range(len(arr[x])):
-                screen.blit(color[arr[x][y]], (x * 32, y * 32, x * 32 + 32, y * 32 + 32))
+                res_id = -1
+                for k, v in self.resources.items():
+                    if v[0] < noise_val <= v[1]:
+                        res_id = k
+
+                values[(left + i, top - j)] = res_id
+        self.save_map(values)
+        # pprint(values)
+
+    #
+    # def return_generation_chunks_with_coords(self, x1, y1, x2, y2, chanse):
+    #     mp = {}
+    #     rndd = random.Random(self.seed + x1 + x2 + y1 + y2)
+    #     for x in range(x1, x2 + 1, config.chunk_size):
+    #         for y in range(y1, y2 + 1, config.chunk_size):
+    #             rnd = rndd.random()
+    #             for ch in chanse:
+    #                 if ch[0] <= rnd and ch[1] >= rnd:
+    #                     mp[(x, y)] = chanse[ch]
+    #                     break
+    #     # self.save_map(mp)
+    #     return mp
+
+    def save_map(self, map):
+        # dir_path = f"/maps"
+        # if not os.path.exists(dir_path):
+        #     os.makedirs(dir_path)
+
+        with open(f'{self.seed}.txt', 'w') as f:
+            f.write(str(map))
 
 
-if __name__ == '__main__':
-    pygame.init()
-    pygame.display.set_caption('Движущийся круг 2')
-    size = width, height = 1000, 1000
-    screen = pygame.display.set_mode(size)
-    screen.fill('white')
-
-    running = True
-    map = MapGenerator()
-    map.draw_map(screen)
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        pygame.display.flip()
-    pygame.quit()
+nm = Map()
+nm.create_chunk(0, 0)
