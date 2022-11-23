@@ -4,14 +4,15 @@ import config
 import json
 
 from perlin_noise import PerlinNoise
-from pprint import pprint
 
 
 class Map:
+    #в ините можно загрузить мапу
     def __init__(self, seed: int = random.randint(10000, 1000000)) -> None:
         self.seed = seed
         self.camera = None
         self.player = None
+        self.map = {}
         self.resources = {
             '1': (-1, 0),  # ground
             '2': (0, 0.1),  # iron
@@ -19,6 +20,14 @@ class Map:
             '4': (0.2, 0.35),  # coal
             '5': (0.35, 1)  # water
         }
+
+    def load_map(self, file_name):
+        with open(file_name, 'r', encoding='utf-8') as f:
+            self.map = json.load(f)
+            self.seed = int(file_name.rstrip('.json'))
+    
+    def create_new_map(self):
+        self.map['0, 0'] = self.create_chunk(0, 0) 
 
     def set_camera(self, camera):
         self.camera = camera
@@ -33,7 +42,7 @@ class Map:
         noise3 = PerlinNoise(octaves=12, seed=self.seed)
 
         size = config.chunk_size
-        values = {}
+        chunk = {}
         for i in range(size):
             for j in range(size):
                 noise_val = noise1([i / size, j / size])
@@ -45,45 +54,46 @@ class Map:
                     if v[0] < noise_val <= v[1]:
                         res_id = k
 
-                values[((left + i) * config.cell_size, (top - j) * config.cell_size)] = res_id
+                chunk[f'{(left + i) * config.cell_size}, {(top - j) * config.cell_size}'] = res_id
+        return chunk
 
-        self.save_map(values)
+    def get_player_coords(self):
+        return self.camera.player.x, self.camera.player.y
 
+    def get_player_chunk(self):
+        left = self.player.x // config.ceil // config.chunk_size
+        top = self.player.y // config.ceil // config.chunk_size
+        return left, top
+    
+    def generate_visible_chuncks(self):
+            count_chunk_col = self.camera.w / config.min_zoom // config.ceil // config.chunk_size + 2
+            count_chunk_row = self.camera.h / config.min_zoom // config.ceil // config.chunk_size + 2
+            
+            left = self.get_player_chunk[0] + count_chunk_col // 2
+            top  = self.get_player_chunk[1] = count_chunk_row // 2
+            
+            for x in range(count_chunk_col):
+                for y in range(count_chunk_col):
+                    self.map[f'{x}, {y}'] = self.map.get(f'{x}, {y}', self.create_chunk())
+                    
 
-    # def get_player_chunk
-
-    def save_map(self, map):
+    def save_map(self):
         # dir_path = f"/maps"
         # if not os.path.exists(dir_path):
         #     os.makedirs(dir_path)
-        new_map = {}
-        for i in map:
-            new_map[f'{i[0]}\_{i[1]}'] = map[i]
+        # new_map = {}
+        # for i in map:
+        #     new_map[f'{i[0]}, {i[1]}'] = map[i]
         with open(f'{self.seed}.json', 'w', encoding='utf-8') as f:
-            json.dump(new_map, f, indent=2)
+            json.dump(self.map, f, indent=2)
 
-        # pprint(values)
-
-    #
-    # def return_generation_chunks_with_coords(self, x1, y1, x2, y2, chanse):
-    #     mp = {}
-    #     rndd = random.Random(self.seed + x1 + x2 + y1 + y2)
-    #     for x in range(x1, x2 + 1, config.chunk_size):
-    #         for y in range(y1, y2 + 1, config.chunk_size):
-    #             rnd = rndd.random()
-    #             for ch in chanse:
-    #                 if ch[0] <= rnd and ch[1] >= rnd:
-    #                     mp[(x, y)] = chanse[ch]
-    #                     break
-    #     # self.save_map(mp)
-    #     return mp
 
 
 
 nm = Map()
-nm.create_chunk(0, 0)
+nm.create_new_map()
+nm.save_map()
 
-# Map().method(camera_obj)
 
 '''
 1) Получить xy игрока
