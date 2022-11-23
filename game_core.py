@@ -29,6 +29,8 @@ class Core:
         else:
             self.map = Map()
         self.camera = Camera(self.sc, self, self.player, self.map)
+
+        self.map.set_camera(self.camera)
         
         self.last_frame_delta = 1
     
