@@ -21,10 +21,10 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x = self.player.x - (self.w / self.player.zoom) / 2 
-        self.start_pos_y = self.player.y - (self.h / self.player.zoom) / 2 
-        self.end_pos_x   = self.player.x + (self.w / self.player.zoom) / 2 
-        self.end_pos_y   = self.player.y + (self.h / self.player.zoom) / 2 
+        self.start_pos_x = self.player.x - (self.w / self.player.zoom) / 2
+        self.start_pos_y = self.player.y - (self.h / self.player.zoom) / 2
+        self.end_pos_x   = self.player.x + (self.w / self.player.zoom) / 2
+        self.end_pos_y   = self.player.y + (self.h / self.player.zoom) / 2
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
@@ -36,11 +36,11 @@ class Camera:
         pygame.display.update()
 
     def draw_grid_chunks(self, start_pos_x, start_pos_y, end_pos_x, end_pos_y):
-        for x in range(start_pos_x, end_pos_x + 1):
+        for x in range(int(start_pos_x), int(end_pos_x) + 1):
             if x % (config.chunk_size * self.player.zoom) == 0:
                 coord = (abs(x - start_pos_x) * config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [coord, 0], [coord, self.h])
-        for y in range(start_pos_y, end_pos_y + 1):
+        for y in range(int(start_pos_y), int(end_pos_y) + 1):
             if abs(y % (config.chunk_size * self.player.zoom)) == 0:
                 coord = (abs(y - end_pos_y) / config.zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
@@ -50,8 +50,8 @@ class Camera:
     
     def _draw_big_chunks(self, mp):
         player_coord = self.player.get_coords()
-        monitor_coord_x = player_coord[0] - (self.w / 2) * self.player.zoom
-        monitor_coord_y = player_coord[1] - (self.h / 2) * self.player.zoom
+        monitor_coord_x = player_coord[0] - (self.w / 2) / self.player.zoom
+        monitor_coord_y = player_coord[1] - (self.h / 2) / self.player.zoom
         for coord in mp:
             self._draw_small_chunks(mp[coord], (monitor_coord_x, monitor_coord_y))
             
