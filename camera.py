@@ -60,17 +60,30 @@ class Camera:
     def draw_player(self):
         pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
     
-    def _draw_map(self, mp):
-        for x, y in mp:
-            if mp[(x, y)] == 'grass':
-                pygame.draw.rect(self.sc, (0, 255, 0), 
-                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
-            elif mp[(x, y)] == 'iron':
-                pygame.draw.rect(self.sc, (200, 200, 200), 
-                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
-            elif mp[(x, y)] == 'cuprum':
-                pygame.draw.rect(self.sc, (221, 106, 11), 
-                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
-            elif mp[(x, y)] == 'ground':
-                pygame.draw.rect(self.sc, (77, 45, 0), 
-                        ((x - self.start_pos_x) * config.zoom, (y - self.start_pos_y) * config.zoom, config.chunk_size, config.chunk_size))
+    def _draw_big_chunks(self, mp):
+        player_coord = self.player.get_coords()
+        monitor_coord_x = player_coord[0] - (self.w / 2) * self.player.zoom
+        monitor_coord_y = player_coord[1] - (self.h / 2) * self.player.zoom
+        for coord in mp:
+            self._draw_small_chunks(mp[coord], (monitor_coord_x, monitor_coord_y))
+            
+    def _draw_small_chunks(self, big_chank, monitor_coord):
+        for x, y in big_chank:
+            mon_xy = self._xy_to_monitor_xy(x, y, *monitor_coord)
+            if big_chank[(x, y)] == 'cuprum':
+                pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.chunk_size * self.player.zoom, config.chunk_size * self.zoom))  
+            elif big_chank[(x, y)] == 'cuprum':
+                pass
+            elif big_chank[(x, y)] == 'cuprum':
+                pass
+            elif big_chank[(x, y)] == 'cuprum':
+                pass
+            elif big_chank[(x, y)] == 'cuprum':
+                pass
+            elif big_chank[(x, y)] == 'cuprum':
+                pass
+            else:
+                pass
+
+    def _xy_to_monitor_xy(self, x1: int, y1: int, x2: int, y2: int) -> tuple[int, int]:
+        return tuple(1, 1)

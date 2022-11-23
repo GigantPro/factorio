@@ -52,3 +52,6 @@ class Player:
             self.y -= self.speed / deltatime * self.zoom
         if self.move_up:
             self.y += self.speed / deltatime * self.zoom
+
+    def get_coords(self):
+        return (self.x, self.y)
