@@ -29,7 +29,7 @@ class Core:
             self.map = Map()
         self.camera = Camera(self.sc, self, self.player, self.map)
 
-        self.map.set_camera(self.camera)
+        self._map_init()
         
         self.last_frame_delta = 1
     
@@ -44,3 +44,8 @@ class Core:
             self.player.keyboard_move(delta_time)
             self.camera.draw_map()
         return
+    
+    def _map_init(self):
+        self.map.set_camera(self.camera)
+        self.map.create_new_map()
+        self.name_save = self.map.save_map()

@@ -24,7 +24,8 @@ class Map:
     def load_map(self, file_name: str) -> None:
         with open(file_name, 'r', encoding='utf-8') as f:
             self.map = json.load(f)
-            self.seed = int(file_name.rstrip('.json'))
+            self.seed = int(file_name.rstrip('.json').split('/')[-1])
+        return self.get_map()
     
     def get_map(self):
         return self.map
@@ -36,12 +37,13 @@ class Map:
         self.camera = camera
         self.player = self.camera.player
 
-    def save_map(self):
-        dir_path = f"/maps"
+    def save_map(self) -> str:
+        dir_path = f"maps"
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        with open(f'dir_path/{self.seed}.json', 'w', encoding='utf-8') as f:
+        with open(f'{dir_path}/{self.seed}.json', 'w', encoding='utf-8') as f:
             json.dump(self.map, f, indent=2)
+        return f'{dir_path}/{self.seed}.json'
 
     def _create_chunk(self, left, top):
         noise1 = PerlinNoise(octaves=3, seed=self.seed)
