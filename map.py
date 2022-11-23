@@ -2,29 +2,37 @@ import os
 import random
 import config
 import json
+
 from perlin_noise import PerlinNoise
 from pprint import pprint
-
-
 
 
 class Map:
     def __init__(self, seed: int = random.randint(10000, 1000000)) -> None:
         self.seed = seed
+        self.camera = None
+        self.player = None
         self.resources = {
-            '1': (-1,   0),  # ground
-            '2': (0,    0.1),  # iron
-            '3': (0.1,  0.2),  # copper
-            '4': (0.2,  0.35),  # coal
+            '1': (-1, 0),  # ground
+            '2': (0, 0.1),  # iron
+            '3': (0.1, 0.2),  # copper
+            '4': (0.2, 0.35),  # coal
             '5': (0.35, 1)  # water
         }
+
+    def set_camera(self, camera):
+        self.camera = camera
+        self.player = self.camera.player
+
+    def check_player_chunk(self):
+        pass
 
     def create_chunk(self, left, top):
         noise1 = PerlinNoise(octaves=3, seed=self.seed)
         noise2 = PerlinNoise(octaves=6, seed=self.seed)
         noise3 = PerlinNoise(octaves=12, seed=self.seed)
 
-        size = config.big_chunk_size
+        size = config.chunk_size
         values = {}
         for i in range(size):
             for j in range(size):
@@ -37,8 +45,23 @@ class Map:
                     if v[0] < noise_val <= v[1]:
                         res_id = k
 
-                values[(left + i, top - j)] = res_id
+                values[((left + i) * config.cell_size, (top - j) * config.cell_size)] = res_id
+
         self.save_map(values)
+
+
+    # def get_player_chunk
+
+    def save_map(self, map):
+        # dir_path = f"/maps"
+        # if not os.path.exists(dir_path):
+        #     os.makedirs(dir_path)
+        new_map = {}
+        for i in map:
+            new_map[f'{i[0]}\_{i[1]}'] = map[i]
+        with open(f'{self.seed}.json', 'w', encoding='utf-8') as f:
+            json.dump(new_map, f, indent=2)
+
         # pprint(values)
 
     #
@@ -55,21 +78,12 @@ class Map:
     #     # self.save_map(mp)
     #     return mp
 
-    def save_map(self, map):
-        # dir_path = f"/maps"
-        # if not os.path.exists(dir_path):
-        #     os.makedirs(dir_path)
-        new_map = {}
-        for i in map:
-            new_map[f'{i[0]}\0{i[1]}'] = map[i]
-        with open(f'{self.seed}.json', 'w') as f:
-            json.dump(new_map, f, indent=2)
 
 
 nm = Map()
 nm.create_chunk(0, 0)
 
-Map().method(camera_obj)
+# Map().method(camera_obj)
 
 '''
 1) Получить xy игрока
