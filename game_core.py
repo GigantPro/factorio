@@ -3,7 +3,6 @@ from player import Player
 from map import Map
 from camera import Camera
 from threading import Thread
-from datetime import datetime
 import config
 
 
