@@ -21,24 +21,10 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x = self.player.x - (self.w / 2) * self.player.zoom
-        self.start_pos_y = self.player.y - (self.h / 2) * self.player.zoom
-        self.end_pos_x   = self.player.x + (self.w / 2) * self.player.zoom
-        self.end_pos_y   = self.player.y + (self.h / 2) * self.player.zoom
-        
-        # mp = self.mp.return_generation_chunks_with_coords(
-        #     self.start_pos_x // config.chunk_size * config.chunk_size,
-        #     self.start_pos_y // config.chunk_size * config.chunk_size,
-        #     self.end_pos_x   // config.chunk_size * config.chunk_size,
-        #     self.end_pos_y   // config.chunk_size * config.chunk_size,
-        #     {
-        #         (0, 0.7): 'grass',
-        #         (0.7, 0.8): 'iron',
-        #         (0.8, 0.85): 'cuprum',
-        #         (0.85, 1): 'ground'
-        #     }
-        # )
-        # self._draw_map(mp)
+        self.start_pos_x = self.player.x - (self.w / self.player.zoom) / 2 
+        self.start_pos_y = self.player.y - (self.h / self.player.zoom) / 2 
+        self.end_pos_x   = self.player.x + (self.w / self.player.zoom) / 2 
+        self.end_pos_y   = self.player.y + (self.h / self.player.zoom) / 2 
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
@@ -60,9 +46,7 @@ class Camera:
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
     def draw_player(self):
-        print(*self.player.get_coords(), self.start_pos_x, self.start_pos_y)
-        print(*self._xy_to_monitor_xy(*self.player.get_coords(), self.start_pos_x, self.start_pos_y))
-        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords(), self.start_pos_x, self.start_pos_y), 20 * self.player.zoom, 40 * self.player.zoom))  
+        pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
     
     def _draw_big_chunks(self, mp):
         player_coord = self.player.get_coords()
