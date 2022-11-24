@@ -4,5 +4,5 @@ zoom            = 1
 min_zoom        = 0.4
 speed           = 50
 fps             = 60
-debug           = True
+debug           = False
 seed            = None

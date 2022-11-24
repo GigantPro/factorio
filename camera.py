@@ -21,10 +21,10 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x = self.player.x - (self.w / self.player.zoom) / 2
-        self.start_pos_y = self.player.y - (self.h / self.player.zoom) / 2
-        self.end_pos_x   = self.player.x + (self.w / self.player.zoom) / 2
-        self.end_pos_y   = self.player.y + (self.h / self.player.zoom) / 2
+        self.start_pos_x = self.player.x - (self.w / 2) / self.player.zoom
+        self.start_pos_y = self.player.y - (self.h / 2) / self.player.zoom
+        self.end_pos_x   = self.player.x + (self.w / 2) / self.player.zoom
+        self.end_pos_y   = self.player.y + (self.h / 2) / self.player.zoom
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
@@ -46,7 +46,8 @@ class Camera:
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
     def draw_player(self):
-        pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
+        # pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
+        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords(), self.start_pos_x, self.start_pos_y), 20 * self.player.zoom, 40 * self.player.zoom))  
     
     def _draw_big_chunks(self, mp):
         player_coord = self.player.get_coords()
@@ -75,4 +76,11 @@ class Camera:
                 pass
 
     def _xy_to_monitor_xy(self, x1: int, y1: int, x2: int, y2: int) -> tuple[int, int]:
-        return (x1 - x2, y2 - y1)
+        ny = 0
+        razn_x = x1 - x2
+        razn_y = y2 - y1
+        if razn_y > 0:      # y
+            ny = -razn_y
+        else:
+            ny = -razn_y
+        return (razn_x, ny)
