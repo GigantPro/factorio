@@ -1,5 +1,6 @@
 import math
 import random
+import time
 import pygame
 from player import Player
 import config
@@ -7,16 +8,24 @@ from map import Map
 
 
 class Camera:
-    def __init__(self, sc: pygame.Surface, game_class, player: Player, mp: Map) -> None:
+    def __init__(self, sc: pygame.Surface, game_class, player: Player, mp: Map, clock, font) -> None:
         self.sc = sc
         self.core = game_class
         self.player = player
         self.mp = mp
+        self.clock = clock
+        self.font = font
 
         self.h = self.sc.get_height()
         self.w = self.sc.get_width()
 
         self.player_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    
+    def print_fps(self, clock: pygame.time.Clock, font: pygame.font.Font):
+        start_time = time.time()
+        text = font.render(str(int(clock.get_fps())), False, (255, 255, 255))
+        self.sc.blit(text, (0, 0))
+        print(time.time() - start_time)
 
     def draw_map(self):
         self.sc.fill((0, 0, 0))
@@ -83,4 +92,14 @@ class Camera:
             ny = -razn_y
         else:
             ny = -razn_y
-        return (razn_x, ny)
+        return (razn_x, razn_y)
+
+    def tr(x1: int, y1: int, x2: int, y2: int):
+        ny = 0
+        razn_x = x1 - x2
+        razn_y = y2 - y1
+        if razn_y > 0:      # y
+            ny = -razn_y
+        else:
+            ny = -razn_y
+        print(razn_x, razn_y)

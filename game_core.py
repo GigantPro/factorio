@@ -27,7 +27,8 @@ class Core:
             self.map = Map(config.seed)
         else:
             self.map = Map()
-        self.camera = Camera(self.sc, self, self.player, self.map)
+        self.font = pygame.font.SysFont('Ariel', 25)
+        self.camera = Camera(self.sc, self, self.player, self.map, self.p_clock, self.font)
 
         self._map_init()
         

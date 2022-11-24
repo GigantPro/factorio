@@ -6,3 +6,4 @@ speed           = 50
 fps             = 60
 debug           = False
 seed            = None
+fps             = False

@@ -74,12 +74,12 @@ class Map:
         top = self.player.y // config.cell_size // config.chunk_size
         return left, top
     
-    def _generate_visible_chuncks(self):
+    def generate_visible_chuncks(self):
             count_chunk_col = self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2
             count_chunk_row = self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 2
             
             left = self._get_player_chunk[0] + count_chunk_col // 2
-            top  = self._get_player_chunk[1] = count_chunk_row // 2
+            top  = self._get_player_chunk[1] + count_chunk_row // 2
             
             for x in range(count_chunk_col):
                 for y in range(count_chunk_col):
