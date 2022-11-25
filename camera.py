@@ -49,11 +49,11 @@ class Camera:
     def draw_grid_chunks(self, start_pos_x, start_pos_y, end_pos_x, end_pos_y):
         for x in range(int(start_pos_x), int(end_pos_x) + 1):
             if x % (config.chunk_size * self.player.zoom) == 0:
-                coord = (abs(x - start_pos_x) * config.zoom)
+                coord = (abs(x - start_pos_x) * config.max_zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [coord, 0], [coord, self.h])
         for y in range(int(start_pos_y), int(end_pos_y) + 1):
             if abs(y % (config.chunk_size * self.player.zoom)) == 0:
-                coord = (abs(y - end_pos_y) / config.zoom)
+                coord = (abs(y - end_pos_y) / config.max_zoom)
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
     def draw_player(self):
@@ -112,14 +112,16 @@ class Camera:
         x1 = y1 = x2 = y2 = 0
         if self.player.x >= 0:   # X >= 0
             x1 = self.player.x - (self.w / 2) / self.player.zoom
+            x2 = x1 + self.w / self.player.zoom
         elif self.player.x < 0:  # X <  0
             x1 = self.player.x + (self.w / 2) / self.player.zoom
+            x2 = x1 + self.w / self.player.zoom
+
         if self.player.y >= 0:   # Y >= 0
             y1 = self.player.y + (self.h / 2) / self.player.zoom
+            y2 = y1 - self.h / self.player.zoom
         elif self.player.y < 0:  # Y <  0
             y1 = self.player.y - (self.h / 2) / self.player.zoom
-
-        x2 = x1 + self.w / self.player.zoom
-        y2 = y1 - self.h / self.player.zoom
-        
+            y2 = y1 - self.h / self.player.zoom
+        print(x1, y1, x2, y2)
         return (x1, y1, x2, y2)

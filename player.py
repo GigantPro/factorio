@@ -37,7 +37,7 @@ class Player:
                 elif event.key == pygame.K_DOWN:
                     self.move_down = False
             elif event.type == pygame.MOUSEWHEEL:
-                if self.zoom < config.zoom and event.y > 0:
+                if self.zoom < config.max_zoom and event.y > 0:
                     self.zoom = self.zoom + 0.2
                 elif self.zoom > config.min_zoom and event.y < 0:
                     self.zoom = self.zoom - 0.2

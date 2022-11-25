@@ -7,7 +7,7 @@ import config
 
 
 class Core:
-    def __init__(self, W: int=None, H: int=None, debug: bool=config.debug, fps: int=config.fps) -> None:
+    def __init__(self, W: int=None, H: int=None, debug: bool=config.debug, fps: int=config.max_fps) -> None:
         self.debug = debug
         self.fps = fps
         
@@ -22,7 +22,7 @@ class Core:
         self.sc = pygame.display.set_mode((self.W, self.H), pygame.FULLSCREEN)
         self.p_clock = pygame.time.Clock()
 
-        self.player = Player(0, 0, config.speed, config.zoom)
+        self.player = Player(0, 0, config.speed, 1)
         if config.seed:
             self.map = Map(config.seed)
         else:
