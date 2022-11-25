@@ -58,7 +58,7 @@ class Camera:
     
     def draw_player(self):
         # pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
-        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords(), self.start_pos_x, self.start_pos_y), 20 * self.player.zoom, 40 * self.player.zoom))  
+        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords()), 20 * self.player.zoom, 40 * self.player.zoom))  
     
     def _draw_big_chunks(self, mp):
         player_coord = self.player.get_coords()
@@ -70,7 +70,7 @@ class Camera:
     def _draw_small_chunks(self, big_chank, monitor_coord):
         for coo in big_chank:
             x, y = tuple(map(int, coo.split(', ')))
-            mon_xy = self._xy_to_monitor_xy(x, y, *monitor_coord)
+            mon_xy = self._xy_to_monitor_xy(x, y)
             if big_chank[f'{x}, {y}'] == '3':
                 pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.chunk_size * self.player.zoom, config.chunk_size * self.player.zoom))  
             elif big_chank[f'{x}, {y}'] == 'cuprum':
@@ -86,34 +86,29 @@ class Camera:
             else:
                 pass
 
-    def _xy_to_monitor_xy(self, x1: int, y1: int, x2: int, y2: int) -> tuple[int, int]:
-        ny = 0
-        razn_x = x1 - x2
-        razn_y = y2 - y1
-        if razn_y > 0:      # y
-            ny = -razn_y
-        else:
-            ny = -razn_y
-        return (razn_x, razn_y)
+    def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[int, int]:
+        x21, y21, x22, y22 = self._get_start_pos_monitor()
+        x = y = 0
+        if x21 >= 0:   # X >= 0
+            x = x21 - abs(x1)
+        elif x21 < 0:  # X <  0
+            x = abs(x21) - x1
 
-    def tr(x1: int, y1: int, x2: int, y2: int):
-        ny = 0
-        razn_x = x1 - x2
-        razn_y = y2 - y1
-        if razn_y > 0:      # y
-            ny = -razn_y
-        else:
-            ny = -razn_y
-        print(razn_x, razn_y)
+        if y21 >= 0:   # Y >= 0
+            y = y21 - abs(y1)
+        elif y21 < 0:  # Y <  0
+            y = abs(y21) - abs(y1)
+        return (x, y)
     
     def _get_start_pos_monitor(self) -> tuple[int, int, int, int]:
         x1 = y1 = x2 = y2 = 0
-        if self.player.x >= 0 and self.player.y >= 0:   # 1
+        if self.player.x >= 0:   # X >= 0
             x1 = self.player.x - (self.w / 2) / self.player.zoom
-        elif self.player.x <= 0 and self.player.y >= 0: # 2
-            pass
-        elif self.player.x <= 0 and self.player.y <= 0: # 3
-            pass
-        elif self.player.x >= 0 and self.player.y <= 0: # 4
-            pass
+        elif self.player.x < 0:  # X <  0
+            self.player.x + (self.w / 2) / self.player.zoom
+
+        if self.player.y >= 0:   # Y >= 0
+            self.player.y + (self.h / 2) / self.player.zoom
+        elif self.player.y < 0:  # Y <  0
+            self.player.y - (self.h / 2) / self.player.zoom
         return (x1, y1, x2, y2)
