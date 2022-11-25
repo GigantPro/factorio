@@ -30,10 +30,12 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x = self.player.x - (self.w / 2) / self.player.zoom
-        self.start_pos_y = self.player.y - (self.h / 2) / self.player.zoom
-        self.end_pos_x   = self.player.x + (self.w / 2) / self.player.zoom
-        self.end_pos_y   = self.player.y + (self.h / 2) / self.player.zoom
+        # self.start_pos_x = self.player.x - (self.w / 2) / self.player.zoom
+        # self.start_pos_y = self.player.y + (self.h / 2) / self.player.zoom
+        # self.end_pos_x   = self.player.x + (self.w / 2) / self.player.zoom
+        # self.end_pos_y   = self.player.y - (self.h / 2) / self.player.zoom
+
+        self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y = self._get_start_pos_monitor()
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
@@ -103,3 +105,15 @@ class Camera:
         else:
             ny = -razn_y
         print(razn_x, razn_y)
+    
+    def _get_start_pos_monitor(self) -> tuple[int, int, int, int]:
+        x1 = y1 = x2 = y2 = 0
+        if self.player.x >= 0 and self.player.y >= 0:   # 1
+            x1 = self.player.x - (self.w / 2) / self.player.zoom
+        elif self.player.x <= 0 and self.player.y >= 0: # 2
+            pass
+        elif self.player.x <= 0 and self.player.y <= 0: # 3
+            pass
+        elif self.player.x >= 0 and self.player.y <= 0: # 4
+            pass
+        return (x1, y1, x2, y2)
