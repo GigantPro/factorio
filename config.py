@@ -6,4 +6,4 @@ speed           = 10
 max_fps         = 60
 debug           = False
 seed            = None
-fps_counter     = False
+fps_counter     = True

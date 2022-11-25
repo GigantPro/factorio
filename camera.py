@@ -22,10 +22,8 @@ class Camera:
         self.player_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     
     def print_fps(self, clock: pygame.time.Clock, font: pygame.font.Font):
-        start_time = time.time()
         text = font.render(str(int(clock.get_fps())), False, (255, 255, 255))
         self.sc.blit(text, (0, 0))
-        print(time.time() - start_time)
 
     def draw_map(self):
         self.sc.fill((0, 0, 0))
@@ -39,8 +37,10 @@ class Camera:
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
-        if self.core.debug:
+        if config.debug:
             self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
+        if config.fps_counter:
+            self.print_fps(self.clock, self.font)
         
         self.draw_player()
 
