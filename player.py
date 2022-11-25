@@ -1,4 +1,5 @@
 import pygame
+import config
 
 
 class Player:
@@ -36,12 +37,12 @@ class Player:
                 elif event.key == pygame.K_DOWN:
                     self.move_down = False
             elif event.type == pygame.MOUSEWHEEL:
-                if self.zoom < 2 and event.y > 0:
+                if self.zoom < config.zoom and event.y > 0:
                     self.zoom = self.zoom + 0.2
-                elif self.zoom > 0.4 and event.y < 0:
+                elif self.zoom > config.min_zoom and event.y < 0:
                     self.zoom = self.zoom - 0.2
-                if self.zoom < 0.4:
-                    self.zoom = 0.4
+                if self.zoom < config.min_zoom:
+                    self.zoom = config.min_zoom
                 self.zoom = round(self.zoom, 1)
         
         if self.move_right:

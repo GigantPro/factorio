@@ -86,29 +86,40 @@ class Camera:
             else:
                 pass
 
-    def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[int, int]:
+    def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
         x21, y21, x22, y22 = self._get_start_pos_monitor()
         x = y = 0
-        if x21 >= 0:   # X >= 0
-            x = x21 - abs(x1)
-        elif x21 < 0:  # X <  0
-            x = abs(x21) - x1
+        if x21 >= 0 and x1 >= 0:   # X >= 0
+            x = x21 - x1
+        elif x21 >= 0 and x1 < 0:
+            x = x21 + x1
+        elif x21 < 0 and x1 >= 0:  # X <  0
+            x = abs(x21) + x1
+        elif x21 < 0 and x1 < 0:  # X <  0
+            x = abs(x21) - abs(x1)
 
-        if y21 >= 0:   # Y >= 0
-            y = y21 - abs(y1)
-        elif y21 < 0:  # Y <  0
-            y = abs(y21) - abs(y1)
+        if y21 >= 0 and y1 >= 0:   # Y >= 0
+            y = y21 - y1
+        elif y21 >= 0 and y1 < 0:
+            y = y21 + abs(y1)
+        elif y21 < 0 and y1 >= 0:  # Y <  0
+            y = y21 - y1
+        elif y21 < 0 and y1 < 0:
+            y = abs(y1) - abs(y21)
         return (x, y)
     
-    def _get_start_pos_monitor(self) -> tuple[int, int, int, int]:
+    def _get_start_pos_monitor(self) -> tuple[float, float, float, float]:
         x1 = y1 = x2 = y2 = 0
         if self.player.x >= 0:   # X >= 0
             x1 = self.player.x - (self.w / 2) / self.player.zoom
         elif self.player.x < 0:  # X <  0
-            self.player.x + (self.w / 2) / self.player.zoom
-
+            x1 = self.player.x + (self.w / 2) / self.player.zoom
         if self.player.y >= 0:   # Y >= 0
-            self.player.y + (self.h / 2) / self.player.zoom
+            y1 = self.player.y + (self.h / 2) / self.player.zoom
         elif self.player.y < 0:  # Y <  0
-            self.player.y - (self.h / 2) / self.player.zoom
+            y1 = self.player.y - (self.h / 2) / self.player.zoom
+
+        x2 = x1 + self.w / self.player.zoom
+        y2 = y1 - self.h / self.player.zoom
+        
         return (x1, y1, x2, y2)
