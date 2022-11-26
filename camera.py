@@ -53,7 +53,7 @@ class Camera:
     
     def draw_player(self):
         # pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
-        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords()), 20 * self.player.zoom, 40 * self.player.zoom))  
+        pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords()), config.cell_size * self.player.zoom, config.cell_size * 2 * self.player.zoom))  
         # print(self._xy_to_monitor_xy(*self.player.get_coords()))
 
     def _draw_big_chunks(self, mp):
@@ -68,7 +68,7 @@ class Camera:
             x, y = tuple(map(int, coo.split(', ')))
             mon_xy = self._xy_to_monitor_xy(x, y)
             if big_chank[f'{x}, {y}'] == '3':
-                pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.chunk_size * self.player.zoom, config.chunk_size * self.player.zoom))  
+                pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
             elif big_chank[f'{x}, {y}'] == 'cuprum':
                 pass
             elif big_chank[f'{x}, {y}'] == 'cuprum':
@@ -86,9 +86,9 @@ class Camera:
         x21, y21, x22, y22 = self._get_start_pos_monitor()
         x = y = 0
         if x21 >= 0 and x1 >= 0:   # X >= 0
-            x = - x21 - x1
+            x = - x21 + x1
         elif x21 >= 0 and x1 < 0:
-            x = x21 + x1
+            x = -x21 - x1
         elif x21 < 0 and x1 >= 0:  # X <  0
             x = abs(x21) + x1
         elif x21 < 0 and x1 < 0:  # X <  0
@@ -114,10 +114,9 @@ class Camera:
             x2 = x1 + self.w / self.player.zoom
 
         if self.player.y >= 0:   # Y >= 0
-            y1 = self.player.y + (self.w / self.player.zoom) / 2
+            y1 = self.player.y + (self.h / self.player.zoom) / 2
             y2 = y1 - self.h / self.player.zoom
         elif self.player.y < 0:  # Y <  0
-            y1 = self.player.y + (self.w / self.player.zoom) / 2
+            y1 = self.player.y + (self.h / self.player.zoom) / 2
             y2 = y1 - self.h / self.player.zoom
-        print(x1, y1, x2, y2)
         return (x1, y1, x2, y2)
