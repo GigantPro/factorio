@@ -83,25 +83,30 @@ class Camera:
                 pass
 
     def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
-        x21, y21, x22, y22 = self._get_start_pos_monitor()
+        Mx, My, x22, y22 = self._get_start_pos_monitor()
         x = y = 0
-        if x21 >= 0 and x1 >= 0:   # X >= 0
-            x = - x21 + x1
-        elif x21 >= 0 and x1 < 0:
-            x = -x21 - x1
-        elif x21 < 0 and x1 >= 0:  # X <  0
-            x = abs(x21) + x1
-        elif x21 < 0 and x1 < 0:  # X <  0
-            x = abs(x21) - abs(x1)
+        if Mx >= 0 and x1 >= 0:   # X >= 0
+            x = - Mx + x1
+        elif Mx >= 0 and x1 < 0:
+            x = -Mx - x1
+        elif Mx < 0 and x1 >= 0:  # X <  0
+            x = abs(Mx) + x1
+        elif Mx < 0 and x1 < 0:  # X <  0
+            x = abs(Mx) - abs(x1)
+        else:
+            print('ERROR: _xy_to_monitor_xy (X)')
 
-        if y21 >= 0 and y1 >= 0:   # Y >= 0
-            y = y21 - y1
-        elif y21 >= 0 and y1 < 0:
-            y = y21 + abs(y1)
-        elif y21 < 0 and y1 >= 0:  # Y <  0
-            y = y21 - y1    
-        elif y21 < 0 and y1 < 0:
-            y = abs(y1) - abs(y21)
+        if My >= 0 and y1 >= 0:   # Y >= 0
+            y = My - y1
+        elif My >= 0 and y1 < 0:
+            y = My + abs(y1)
+        elif My < 0 and y1 >= 0:  # Y <  0
+            y = My - y1    
+        elif My < 0 and y1 < 0:
+            y = abs(y1) - abs(My)
+        else:
+            print('ERROR: _xy_to_monitor_xy (Y)')
+        
         return (x, y)
     
     def _get_start_pos_monitor(self) -> tuple[float, float, float, float]:
