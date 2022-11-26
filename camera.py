@@ -54,7 +54,7 @@ class Camera:
     def draw_player(self):
         # pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
         pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords()), 20 * self.player.zoom, 40 * self.player.zoom))  
-        print(self._xy_to_monitor_xy(*self.player.get_coords()))
+        # print(self._xy_to_monitor_xy(*self.player.get_coords()))
 
     def _draw_big_chunks(self, mp):
         player_coord = self.player.get_coords()
@@ -86,7 +86,7 @@ class Camera:
         x21, y21, x22, y22 = self._get_start_pos_monitor()
         x = y = 0
         if x21 >= 0 and x1 >= 0:   # X >= 0
-            x = x21 - x1
+            x = - x21 - x1
         elif x21 >= 0 and x1 < 0:
             x = x21 + x1
         elif x21 < 0 and x1 >= 0:  # X <  0
@@ -99,7 +99,7 @@ class Camera:
         elif y21 >= 0 and y1 < 0:
             y = y21 + abs(y1)
         elif y21 < 0 and y1 >= 0:  # Y <  0
-            y = y21 - y1
+            y = y21 - y1    
         elif y21 < 0 and y1 < 0:
             y = abs(y1) - abs(y21)
         return (x, y)
@@ -107,16 +107,17 @@ class Camera:
     def _get_start_pos_monitor(self) -> tuple[float, float, float, float]:
         x1 = y1 = x2 = y2 = 0
         if self.player.x >= 0:   # X >= 0
-            x1 = self.player.x - (self.w / 2) / self.player.zoom
+            x1 = self.player.x - (self.w / self.player.zoom) / 2
             x2 = x1 + self.w / self.player.zoom
         elif self.player.x < 0:  # X <  0
-            x1 = self.player.x + (self.w / 2) / self.player.zoom
+            x1 = self.player.x - (self.w / self.player.zoom) / 2
             x2 = x1 + self.w / self.player.zoom
 
         if self.player.y >= 0:   # Y >= 0
-            y1 = self.player.y + (self.h / 2) / self.player.zoom
+            y1 = self.player.y + (self.w / self.player.zoom) / 2
             y2 = y1 - self.h / self.player.zoom
         elif self.player.y < 0:  # Y <  0
-            y1 = self.player.y + (self.h / 2) / self.player.zoom
+            y1 = self.player.y + (self.w / self.player.zoom) / 2
             y2 = y1 - self.h / self.player.zoom
+        print(x1, y1, x2, y2)
         return (x1, y1, x2, y2)
