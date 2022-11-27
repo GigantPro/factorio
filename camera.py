@@ -28,12 +28,12 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
 
-        self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y = self._get_start_pos_monitor()
+        # self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y = self._get_start_pos_monitor()
 
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
-        if config.debug:
-            self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
+        # if config.debug:
+        #     self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
         if config.fps_counter:
             self.print_fps(self.clock, self.font)
         
@@ -52,18 +52,13 @@ class Camera:
                 pygame.draw.aaline(self.sc, (255, 255, 255), [0, coord], [self.w, coord])
     
     def draw_player(self):
-        # pygame.draw.rect(self.sc, self.player_color, (self.w / 2 - 10 * self.player.zoom, self.h / 2 - 20 * self.player.zoom, 20 * self.player.zoom, 40 * self.player.zoom))  
         pygame.draw.rect(self.sc, self.player_color, (*self._xy_to_monitor_xy(*self.player.get_coords()), config.cell_size * self.player.zoom, config.cell_size * 2 * self.player.zoom))  
-        # print(self._xy_to_monitor_xy(*self.player.get_coords()))
 
     def _draw_big_chunks(self, mp):
-        player_coord = self.player.get_coords()
-        monitor_coord_x = player_coord[0] - (self.w / 2) / self.player.zoom
-        monitor_coord_y = player_coord[1] - (self.h / 2) / self.player.zoom
         for coord in mp:
-            self._draw_small_chunks(mp[coord], (monitor_coord_x, monitor_coord_y))
+            self._draw_small_chunks(mp[coord])
             
-    def _draw_small_chunks(self, big_chank, monitor_coord):
+    def _draw_small_chunks(self, big_chank):
         for coo in big_chank:
             x, y = tuple(map(int, coo.split(', ')))
             mon_xy = self._xy_to_monitor_xy(x, y)
@@ -83,45 +78,21 @@ class Camera:
                 pass
 
     def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
-        Mx, My, x22, y22 = self._get_start_pos_monitor()
-        x = y = 0
-        if Mx >= 0 and x1 >= 0:   # X >= 0
-            x = - Mx + x1
-        elif Mx >= 0 and x1 < 0:
-            x = -Mx - x1
-        elif Mx < 0 and x1 >= 0:  # X <  0
-            x = abs(Mx) + x1
-        elif Mx < 0 and x1 < 0:  # X <  0
-            x = abs(Mx) - abs(x1)
-        else:
-            print('ERROR: _xy_to_monitor_xy (X)')
-
-        if My >= 0 and y1 >= 0:   # Y >= 0
-            y = My - y1
-        elif My >= 0 and y1 < 0:
-            y = My + abs(y1)
-        elif My < 0 and y1 >= 0:  # Y <  0
-            y = My - y1    
-        elif My < 0 and y1 < 0:
-            y = abs(y1) - abs(My)
-        else:
-            print('ERROR: _xy_to_monitor_xy (Y)')
-        
-        return (x, y)
+        return (((self.w / 2) + x1 - self.player.x) * self.player.zoom, ((self.h / 2) - (y1 - self.player.y)) * self.player.zoom)
     
-    def _get_start_pos_monitor(self) -> tuple[float, float, float, float]:
-        x1 = y1 = x2 = y2 = 0
-        if self.player.x >= 0:   # X >= 0
-            x1 = self.player.x - (self.w / self.player.zoom) / 2
-            x2 = x1 + self.w / self.player.zoom
-        elif self.player.x < 0:  # X <  0
-            x1 = self.player.x - (self.w / self.player.zoom) / 2
-            x2 = x1 + self.w / self.player.zoom
+    # def _get_start_pos_monitor(self) -> tuple[float, float, float, float]:
+    #     x1 = y1 = x2 = y2 = 0
+    #     if self.player.x >= 0:   # X >= 0
+    #         x1 = self.player.x - (self.w / self.player.zoom) / 2
+    #         x2 = x1 + self.w / self.player.zoom
+    #     elif self.player.x < 0:  # X <  0
+    #         x1 = self.player.x - (self.w / self.player.zoom) / 2
+    #         x2 = x1 + self.w / self.player.zoom
 
-        if self.player.y >= 0:   # Y >= 0
-            y1 = self.player.y + (self.h / self.player.zoom) / 2
-            y2 = y1 - self.h / self.player.zoom
-        elif self.player.y < 0:  # Y <  0
-            y1 = self.player.y + (self.h / self.player.zoom) / 2
-            y2 = y1 - self.h / self.player.zoom
-        return (x1, y1, x2, y2)
+    #     if self.player.y >= 0:   # Y >= 0
+    #         y1 = self.player.y + (self.h / self.player.zoom) / 2
+    #         y2 = y1 - self.h / self.player.zoom
+    #     elif self.player.y < 0:  # Y <  0
+    #         y1 = self.player.y + (self.h / self.player.zoom) / 2
+    #         y2 = y1 - self.h / self.player.zoom
+    #     return (x1, y1, x2, y2)
