@@ -69,12 +69,12 @@ class Map:
             count_chunk_col = self.camera.w / config.min_zoom // config.ceil // config.chunk_size + 2
             count_chunk_row = self.camera.h / config.min_zoom // config.ceil // config.chunk_size + 2
             
-            left = self.get_player_chunk[0] + count_chunk_col // 2
+            left = self.get_player_chunk[0] = count_chunk_col // 2
             top  = self.get_player_chunk[1] = count_chunk_row // 2
             
             for x in range(count_chunk_col):
                 for y in range(count_chunk_col):
-                    self.map[f'{x}, {y}'] = self.map.get(f'{x}, {y}', self.create_chunk())
+                    self.map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}', self.create_chunk())
                     
 
     def save_map(self):
