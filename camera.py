@@ -27,9 +27,7 @@ class Camera:
 
     def draw_map(self):
         self.sc.fill((0, 0, 0))
-
-        # self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y = self._get_start_pos_monitor()
-
+        
         self._draw_big_chunks(self.mp.load_map(self.core.name_save))
 
         # if config.debug:
