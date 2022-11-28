@@ -40,7 +40,7 @@ class Core:
     
     def _game_run(self):
         while not self.flag_stop_game_thread:
-            delta_time = self.p_clock.tick(self.fps)
+            delta_time = self.p_clock.tick(self.fps) / 1000
 
             self.player.keyboard_move(delta_time)
             self.camera.draw_map()
