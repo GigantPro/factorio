@@ -48,7 +48,7 @@ class Map:
     def generate_visible_chunks(self, player_chunk: list[int, int]):
         print(player_chunk)
         count_chunk_col = int(self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2)
-        count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 2)
+        count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 4)
 
         left = player_chunk[0] - count_chunk_col // 2
         top = player_chunk[1] + count_chunk_row // 2
