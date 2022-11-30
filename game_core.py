@@ -22,7 +22,7 @@ class Core:
         self.sc = pygame.display.set_mode((self.W, self.H), pygame.FULLSCREEN)
         self.p_clock = pygame.time.Clock()
 
-        self.player = Player(0, 0, config.speed, 1)
+        self.player = Player(0, 0, config.speed, 1, self)
         if config.seed:
             self.map = Map(config.seed)
         else:
@@ -38,7 +38,8 @@ class Core:
     
     def start_game(self):
         self.flag_stop_game_thread = False
-        self.game_run_thread = Thread(target=self._game_run).run()
+        self.game_run_thread = Thread(target=self._game_run)
+        self.game_run_thread.run()
     
     def _game_run(self):
         while not self.flag_stop_game_thread:
@@ -52,3 +53,8 @@ class Core:
         self.map.set_camera(self.camera)
         self.map.create_new_map()
         self.name_save = self.map.save_map()
+        self.map.load_map(self.name_save)
+    
+    def full_stop(self):
+        self.flag_stop_game_thread  = True
+        self.map.stop_save_thread   = True

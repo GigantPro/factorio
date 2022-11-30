@@ -1,8 +1,8 @@
 cell_size       = 50
-chunk_size      = 16
+chunk_size      = 32
 max_zoom        = 2
 min_zoom        = 0.4
-speed           = 100
+speed           = 1000
 max_fps         = 0
 debug           = False
 seed            = None

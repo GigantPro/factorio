@@ -3,21 +3,27 @@ import config
 
 
 class Player:
-    def __init__(self, x: int, y: int, speed: int, zoom: int) -> None:
+    def __init__(self, x: int, y: int, speed: int, zoom: int, core) -> None:
         self.x      = x
         self.y      = y
         self.speed  = speed
         self.zoom   = zoom
+        self.core   = core
+
+        self.chunk_x = self.x // config.cell_size // config.chunk_size
+        self.chunk_y = self.y // config.cell_size // config.chunk_size
+
+        self.chunk_changed_flag = False
 
         self.move_right = False
-        self.move_left = False
-        self.move_up = False
-        self.move_down = False
+        self.move_left  = False
+        self.move_up    = False
+        self.move_down  = False
     
     def keyboard_move(self, deltatime):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
+                self.core.full_stop()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     self.move_right = True
