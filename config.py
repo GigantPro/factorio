@@ -1,4 +1,4 @@
-cell_size       = 200
+cell_size       = 50
 chunk_size      = 32
 max_zoom        = 2
 min_zoom        = 0.4

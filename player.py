@@ -59,8 +59,8 @@ class Player:
         if self.move_up:
             self.y += (self.speed * self.zoom) * deltatime
 
-        new_chunk_x = self.x // config.cell_size // config.chunk_size
-        new_chunk_y = self.y // config.cell_size // config.chunk_size
+        new_chunk_x = int(self.x // config.cell_size // config.chunk_size)
+        new_chunk_y = int(self.y // config.cell_size // config.chunk_size)
 
         if new_chunk_x != self.chunk_x or new_chunk_y != self.chunk_y:
             self.chunk_changed_flag = True
