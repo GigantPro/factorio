@@ -31,7 +31,7 @@ class Map:
         return self.map
 
     def create_new_map(self):
-        self.generate_visible_chunks((0, 0))
+        self.generate_visible_chunks([0, 0])
 
 
     def set_camera(self, camera):
@@ -46,7 +46,7 @@ class Map:
             json.dump(self.map, f, indent=2)
         return f'{dir_path}/{self.seed}.json'
 
-    def generate_visible_chunks(self, player_chunk: tuple[int, int]):
+    def generate_visible_chunks(self, player_chunk: list[int, int]):
             count_chunk_col = int(self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2)
             count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 2)
 
@@ -58,9 +58,9 @@ class Map:
                     self.map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}', self._create_chunk(left + x, top - y))
 
     def _create_chunk(self, left, top):
-        noise1 = PerlinNoise(octaves=3, seed=self.seed + left + top + left * top + random.randint(1 , 100))
-        noise2 = PerlinNoise(octaves=6, seed=self.seed + left + top + left * top + random.randint(1 , 100))
-        noise3 = PerlinNoise(octaves=12, seed=self.seed + left + top + left * top + random.randint(1 , 100))
+        noise1 = PerlinNoise(octaves=3, seed=self.seed + left + top + left * top + random.randint(1, 100))
+        noise2 = PerlinNoise(octaves=6, seed=self.seed + left + top + left * top + random.randint(1, 100))
+        noise3 = PerlinNoise(octaves=12, seed=self.seed + left + top + left * top + random.randint(1, 100))
 
         size = config.chunk_size
         chunk = {}

@@ -1,8 +1,9 @@
-cell_size       = 50
-chunk_size      = 16
-zoom            = 1
+cell_size       = 200
+chunk_size      = 32
+max_zoom        = 2
 min_zoom        = 0.4
-speed           = 50
-fps             = 60
-debug           = True
+speed           = 1000
+max_fps         = 0
+debug           = False
 seed            = None
+fps_counter     = True

@@ -3,12 +3,11 @@ from player import Player
 from map import Map
 from camera import Camera
 from threading import Thread
-from datetime import datetime
 import config
 
 
 class Core:
-    def __init__(self, W: int=None, H: int=None, debug: bool=config.debug, fps: int=config.fps) -> None:
+    def __init__(self, W: int=None, H: int=None, debug: bool=config.debug, fps: int=config.max_fps) -> None:
         self.debug = debug
         self.fps = fps
         
@@ -23,12 +22,17 @@ class Core:
         self.sc = pygame.display.set_mode((self.W, self.H), pygame.FULLSCREEN)
         self.p_clock = pygame.time.Clock()
 
-        self.player = Player(0, 0, config.speed, config.zoom)
+        self.player = Player(0, 0, config.speed, 1)
         if config.seed:
             self.map = Map(config.seed)
         else:
             self.map = Map()
-        self.camera = Camera(self.sc, self, self.player, self.map)
+
+        self.font = pygame.font.SysFont('Ariel', 25)
+        self.camera = Camera(self.sc, self, self.player, self.map, self.p_clock, self.font)
+
+        self._map_init()
+        self.map.load_map(self.name_save)
         
         self.last_frame_delta = 1
     
@@ -38,8 +42,18 @@ class Core:
     
     def _game_run(self):
         while not self.flag_stop_game_thread:
-            delta_time = self.p_clock.tick(self.fps)
+            delta_time = self.p_clock.tick(self.fps) / 1000
+
+            if self.player.chunk_changed_flag:
+
+                self.map.generate_visible_chunks([self.player.chunk_x, self.player.chunk_y])
+                self.player.chunk_changed_flag = False
 
             self.player.keyboard_move(delta_time)
             self.camera.draw_map()
         return
+    
+    def _map_init(self):
+        self.map.set_camera(self.camera)
+        self.map.create_new_map()
+        self.name_save = self.map.save_map()
