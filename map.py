@@ -58,7 +58,7 @@ class Map:
                 self.map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}',
                                                                   self._create_chunk(left + x, top - y))
         self.save_map()
-        
+
     def _create_chunk(self, left, top):
         noise1 = PerlinNoise(octaves=3, seed=self.seed + left + top + left * top + random.randint(1, 100))
         noise2 = PerlinNoise(octaves=6, seed=self.seed + left + top + left * top + random.randint(1, 100))
