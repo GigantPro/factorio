@@ -59,12 +59,11 @@ class Map:
 
     def generate_visible_chunks(self, player_chunk: list[int, int] = None, new = True):
         if not player_chunk:
-            x1 = int(self.player.x // config.cell_size // config.chunk_size)
-            y1 = int(self.player.y // config.cell_size // config.chunk_size)
-            player_chunk = (x1, y1)
-        # print(player_chunk)
+            # x1 = int(self.player.x // config.cell_size // config.chunk_size)
+            # y1 = int(self.player.y // config.cell_size // config.chunk_size)
+            player_chunk = self._get_player_chunk()
         count_chunk_col = int(self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2)
-        count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 2)
+        count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 4)
 
         left = player_chunk[0] - count_chunk_col // 2
         top = player_chunk[1] + count_chunk_row // 2
@@ -74,9 +73,10 @@ class Map:
                     self.map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}',
                                                                     self._create_chunk(left + x, top - y))
         else:
-            for y in range(count_chunk_col):
-                self.new_map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}',
-                                                                self._create_chunk(left + x, top - y))
+            for x in range(count_chunk_col):
+                for y in range(count_chunk_col):
+                    self.new_map[f'{left + x}, {top - y}'] = self.new_map.get(f'{left + x}, {top - y}',
+                                                                    self._create_chunk(left + x, top - y))
         # self.save_thread.start()
         
     def _create_chunk(self, left, top):

@@ -47,6 +47,11 @@ class Core:
 
             self.player.keyboard_move(delta_time)
             self.camera.draw_map()
+
+            if self.map.new_map:
+                for x, y in self.map.new_map.items():
+                    self.map.map[x] = y
+                self.map.new_map = {}
         return
     
     def _map_init(self):
@@ -58,3 +63,7 @@ class Core:
     def full_stop(self):
         self.flag_stop_game_thread  = True
         self.map.stop_save_thread   = True
+        self.map.updating_map_thread= True
+
+        pygame.quit()
+        exit()

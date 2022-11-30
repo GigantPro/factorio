@@ -61,26 +61,26 @@ class Camera:
         x1, y1, x2, y2 = self._get_xy_visible_chunk()
         for coord in mp:
             tmp = tuple(coord.split(', '))
-            tmp = (int(tmp[0]), int(tmp[1]))
+            tmp = (int(float(tmp[0])), int(float(tmp[1])))
             if tmp >= (x1, y1) and tmp <= (x2, y2):
                 self._draw_small_chunks(mp[coord])
             
     def _draw_small_chunks(self, big_chank):
         for coo in big_chank:
-            x, y = tuple(map(int, coo.split(', ')))
+            x, y = tuple(map(float, coo.split(', ')))
             mon_xy = self._xy_to_monitor_xy(x, y)
-            if big_chank[f'{x}, {y}'] == '3':
+            if big_chank[coo] == '5':
                 # self.sc.blit(self.pers, (config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))
                 pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
-            elif big_chank[f'{x}, {y}'] == 'cuprum':
+            elif big_chank[coo] == '2':
+                pygame.draw.rect(self.sc, (50, 50, 50), (mon_xy[0], mon_xy[1], config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
+            elif big_chank[coo] == 'cuprum':
                 pass
-            elif big_chank[f'{x}, {y}'] == 'cuprum':
+            elif big_chank[coo] == 'cuprum':
                 pass
-            elif big_chank[f'{x}, {y}'] == 'cuprum':
+            elif big_chank[coo] == 'cuprum':
                 pass
-            elif big_chank[f'{x}, {y}'] == 'cuprum':
-                pass
-            elif big_chank[f'{x}, {y}'] == 'cuprum':
+            elif big_chank[coo] == 'cuprum':
                 pass
             else:
                 pass
@@ -89,8 +89,8 @@ class Camera:
         return (((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom))
     
     def _get_xy_visible_chunk(self) -> tuple[int, int, int, int]:
-        x1 = self.player.x - (((self.w * self.player.zoom) // config.chunk_size) * config.chunk_size) 
-        x2 = self.player.x + (((self.w * self.player.zoom) // config.chunk_size) * config.chunk_size)
-        y1 = self.player.y + (((self.h * self.player.zoom) // config.chunk_size) * config.chunk_size)
-        y2 = self.player.y - (((self.h * self.player.zoom) // config.chunk_size) * config.chunk_size)
+        x1 = self.player.x - ((self.w / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
+        x2 = self.player.x + ((self.w / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
+        y1 = self.player.y + ((self.h / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
+        y2 = self.player.y - ((self.h / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
         return x1, y1, x2, y2
