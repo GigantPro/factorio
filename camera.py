@@ -28,8 +28,8 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
         
-        self._draw_big_chunks(self.mp.load_map(self.core.name_save))
-
+        # self._draw_big_chunks(self.mp.get_map())
+        self._draw_big_chunks(self.mp.return_visible_chunks_cords())
         # if config.debug:
         #     self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
         if config.fps_counter:
@@ -55,10 +55,11 @@ class Camera:
         y = y - config.cell_size * 2 * self.player.zoom
         pygame.draw.rect(self.sc, self.player_color, (x, y, config.cell_size * self.player.zoom, config.cell_size * 2 * self.player.zoom))  
 
-    def _draw_big_chunks(self, mp):
-        for coord in mp:
-            self._draw_small_chunks(mp[coord])
-            
+
+    def _draw_big_chunks(self, cords):
+        for cord in cords:
+            self._draw_small_chunks(self.mp.get_map()[cord])
+
     def _draw_small_chunks(self, big_chank):
         for coo in big_chank:
             x, y = tuple(map(int, coo.split(', ')))
@@ -79,4 +80,4 @@ class Camera:
                 pass
 
     def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
-        return (((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom))
+        return ((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom)

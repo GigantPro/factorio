@@ -41,16 +41,21 @@ class Core:
         self.game_run_thread = Thread(target=self._game_run).run()
     
     def _game_run(self):
+
         while not self.flag_stop_game_thread:
+            thread = Thread(target=self.map.generate_visible_chunks,
+                            args=([self.player.chunk_x, self.player.chunk_y],))
             delta_time = self.p_clock.tick(self.fps) / 1000
 
             if self.player.chunk_changed_flag:
 
-                self.map.generate_visible_chunks([self.player.chunk_x, self.player.chunk_y])
+                # self.map.generate_visible_chunks([self.player.chunk_x, self.player.chunk_y])
+                thread.start()
                 self.player.chunk_changed_flag = False
 
             self.player.keyboard_move(delta_time)
             self.camera.draw_map()
+
         return
     
     def _map_init(self):

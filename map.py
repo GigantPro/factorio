@@ -25,15 +25,14 @@ class Map:
         with open(file_name, 'r', encoding='utf-8') as f:
             self.map = json.load(f)
             self.seed = int(file_name.rstrip('.json').split('/')[-1])
-        return self.get_map()
 
     def get_map(self):
         return self.map
 
-    def create_new_map(self):
+    def create_new_map(self) -> None:
         self.generate_visible_chunks([0, 0])
 
-    def set_camera(self, camera):
+    def set_camera(self, camera) -> None:
         self.camera = camera
         self.player = self.camera.player
 
@@ -46,9 +45,11 @@ class Map:
         return f'{dir_path}/{self.seed}.json'
 
     def generate_visible_chunks(self, player_chunk: list[int, int]):
-        print(player_chunk)
         count_chunk_col = int(self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2)
         count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 4)
+        # count_chunk_col = int(1920 / config.min_zoom // config.cell_size // config.chunk_size + 2)
+        # count_chunk_row = int(1280 / config.min_zoom // config.cell_size // config.chunk_size + 4)
+
 
         left = player_chunk[0] - count_chunk_col // 2
         top = player_chunk[1] + count_chunk_row // 2
@@ -58,6 +59,23 @@ class Map:
                 self.map[f'{left + x}, {top - y}'] = self.map.get(f'{left + x}, {top - y}',
                                                                   self._create_chunk(left + x, top - y))
         self.save_map()
+
+    def return_visible_chunks_cords(self) -> list:
+        player_chunk = self._get_player_chunk()
+        count_chunk_col = int(self.camera.w / config.min_zoom // config.cell_size // config.chunk_size + 2)
+        count_chunk_row = int(self.camera.h / config.min_zoom // config.cell_size // config.chunk_size + 4)
+
+        left = player_chunk[0] - count_chunk_col // 2
+        top = player_chunk[1] + count_chunk_row // 2
+
+        cords = []
+
+        for x in range(count_chunk_col):
+            for y in range(count_chunk_col):
+                if f'{left + x}, {top - y}' in self.map.keys():
+                    cords.append(f'{left + x}, {top - y}')
+
+        return cords
 
     def _create_chunk(self, left, top):
         noise1 = PerlinNoise(octaves=3, seed=self.seed + left + top + left * top + random.randint(1, 100))
@@ -82,10 +100,12 @@ class Map:
                     f'{(left * config.chunk_size + i) * config.cell_size}, {(top * config.chunk_size - j) * config.cell_size}'] = res_id
         return chunk
 
-    def _get_player_coords(self):
-        return self.player.x, self.player.y
-
     def _get_player_chunk(self):
-        left = self.player.x // config.cell_size // config.chunk_size
-        top = self.player.y // config.cell_size // config.chunk_size
+        left = int(self.player.x // config.cell_size // config.chunk_size)
+        top = int(self.player.y // config.cell_size // config.chunk_size)
         return left, top
+
+
+# m = Map()
+# m.create_new_map()
+# print(m.get_map().keys())

@@ -4,10 +4,10 @@ import config
 
 class Player:
     def __init__(self, x: int, y: int, speed: int, zoom: int) -> None:
-        self.x      = x
-        self.y      = y
-        self.speed  = speed
-        self.zoom   = zoom
+        self.x     = x
+        self.y     = y
+        self.speed = speed
+        self.zoom  = zoom
 
         self.chunk_x = self.x // config.cell_size // config.chunk_size
         self.chunk_y = self.y // config.cell_size // config.chunk_size
