@@ -3,12 +3,11 @@ import config
 
 
 class Player:
-    def __init__(self, x: int, y: int, speed: int, zoom: int, core) -> None:
-        self.x      = x
-        self.y      = y
-        self.speed  = speed
-        self.zoom   = zoom
-        self.core   = core
+    def __init__(self, x: int, y: int, speed: int, zoom: int) -> None:
+        self.x     = x
+        self.y     = y
+        self.speed = speed
+        self.zoom  = zoom
 
         self.chunk_x = self.x // config.cell_size // config.chunk_size
         self.chunk_y = self.y // config.cell_size // config.chunk_size
@@ -23,7 +22,7 @@ class Player:
     def keyboard_move(self, deltatime):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.core.full_stop()
+                exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     self.move_right = True
@@ -59,6 +58,15 @@ class Player:
             self.y -= (self.speed * self.zoom) * deltatime
         if self.move_up:
             self.y += (self.speed * self.zoom) * deltatime
+
+        new_chunk_x = int(self.x // config.cell_size // config.chunk_size)
+        new_chunk_y = int(self.y // config.cell_size // config.chunk_size)
+
+        if new_chunk_x != self.chunk_x or new_chunk_y != self.chunk_y:
+            self.chunk_changed_flag = True
+
+        self.chunk_x = new_chunk_x
+        self.chunk_y = new_chunk_y
 
     def get_coords(self):
         return (self.x, self.y)

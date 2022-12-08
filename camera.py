@@ -19,8 +19,6 @@ class Camera:
         self.h = self.sc.get_height()
         self.w = self.sc.get_width()
 
-        # self.pers = pygame.image.load('pers_zad.png')
-
         self.player_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     
     def print_fps(self, clock: pygame.time.Clock, font: pygame.font.Font):
@@ -30,8 +28,8 @@ class Camera:
     def draw_map(self):
         self.sc.fill((0, 0, 0))
         
-        self._draw_big_chunks(self.mp.get_map())
-
+        # self._draw_big_chunks(self.mp.get_map())
+        self._draw_big_chunks(self.mp.return_visible_chunks_cords())
         # if config.debug:
         #     self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
         if config.fps_counter:
@@ -57,40 +55,29 @@ class Camera:
         y = y - config.cell_size * 2 * self.player.zoom
         pygame.draw.rect(self.sc, self.player_color, (x, y, config.cell_size * self.player.zoom, config.cell_size * 2 * self.player.zoom))  
 
-    def _draw_big_chunks(self, mp):
-        x1, y1, x2, y2 = self._get_xy_visible_chunk()
-        for coord in mp:
-            tmp = tuple(coord.split(', '))
-            tmp = (int(float(tmp[0])), int(float(tmp[1])))
-            if tmp >= (x1, y1) and tmp <= (x2, y2):
-                self._draw_small_chunks(mp[coord])
-            
+
+    def _draw_big_chunks(self, cords):
+        for cord in cords:
+            self._draw_small_chunks(self.mp.get_map()[cord])
+
     def _draw_small_chunks(self, big_chank):
         for coo in big_chank:
-            x, y = tuple(map(float, coo.split(', ')))
+            x, y = tuple(map(int, coo.split(', ')))
             mon_xy = self._xy_to_monitor_xy(x, y)
-            if big_chank[coo] == '5':
-                # self.sc.blit(self.pers, (config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))
+            if big_chank[f'{x}, {y}'] == '3':
                 pygame.draw.rect(self.sc, (50, 10, 200), (mon_xy[0], mon_xy[1], config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
-            elif big_chank[coo] == '2':
-                pygame.draw.rect(self.sc, (50, 50, 50), (mon_xy[0], mon_xy[1], config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
-            elif big_chank[coo] == 'cuprum':
+            elif big_chank[f'{x}, {y}'] == 'cuprum':
                 pass
-            elif big_chank[coo] == 'cuprum':
+            elif big_chank[f'{x}, {y}'] == 'cuprum':
                 pass
-            elif big_chank[coo] == 'cuprum':
+            elif big_chank[f'{x}, {y}'] == 'cuprum':
                 pass
-            elif big_chank[coo] == 'cuprum':
+            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                pass
+            elif big_chank[f'{x}, {y}'] == 'cuprum':
                 pass
             else:
                 pass
 
     def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
-        return (((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom))
-    
-    def _get_xy_visible_chunk(self) -> tuple[int, int, int, int]:
-        x1 = self.player.x - ((self.w / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
-        x2 = self.player.x + ((self.w / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
-        y1 = self.player.y + ((self.h / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
-        y2 = self.player.y - ((self.h / 2 * self.player.zoom) + (config.chunk_size * config.cell_size * self.player.zoom)) 
-        return x1, y1, x2, y2
+        return ((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom)
