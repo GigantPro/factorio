@@ -1,5 +1,6 @@
 import math
 import random
+from threading import Thread
 import time
 import pygame
 from player import Player
@@ -29,7 +30,9 @@ class Camera:
         self.sc.fill((0, 0, 0))
         
         # self._draw_big_chunks(self.mp.get_map())
-        self._draw_big_chunks(self.mp.return_visible_chunks_cords())
+        self.start_rendering = True
+        self.visible_chunks = self.mp.return_visible_chunks_cords()
+        self._draw_big_chunks(self.visible_chunks)
         # if config.debug:
         #     self.draw_grid_chunks(self.start_pos_x, self.start_pos_y, self.end_pos_x, self.end_pos_y)
         if config.fps_counter:
@@ -54,11 +57,14 @@ class Camera:
         x = x - config.cell_size / 2 * self.player.zoom
         y = y - config.cell_size * 2 * self.player.zoom
         pygame.draw.rect(self.sc, self.player_color, (x, y, config.cell_size * self.player.zoom, config.cell_size * 2 * self.player.zoom))  
-
-
+ 
     def _draw_big_chunks(self, cords):
+        chunks_threads = []
         for cord in cords:
-            self._draw_small_chunks(self.mp.get_map()[cord])
+            temp = Thread(target=self._draw_small_chunks(self.mp.get_map()[cord]))
+            temp.start()
+            chunks_threads.append(temp)
+        [i.join() for i in chunks_threads]
 
     def _draw_small_chunks(self, big_chank):
         for coo in big_chank:
@@ -81,3 +87,36 @@ class Camera:
 
     def _xy_to_monitor_xy(self, x1: int, y1: int) -> tuple[float, float]:
         return ((self.w / 2) + (x1 - self.player.x) * self.player.zoom), ((self.h / 2) - (y1 - self.player.y) * self.player.zoom)
+    
+    def start_threads(self, threads_count: int=4) -> None:
+        self.threads_rendering = []
+        for i in  range(threads_count):
+            self.threads_rendering.append(Thread(target=self._rendering_zone, args=(i,)))
+            self.threads_rendering[-1].start()
+    
+    def _rendering_zone(self, index):
+        start_monitor_pos = (self.w // index, self.h // index)
+        while True:
+            if self.start_rendering:
+                for i in self.visible_chunks:
+                    x, y = tuple(map(int, i.split(', ')))
+                    x, y = self._xy_to_monitor_xy(x, y)
+                    if x < start_monitor_pos[0] and y < start_monitor_pos[1]:
+                        for big_chank in i:
+                            if big_chank[f'{x}, {y}'] == '3':
+                                pygame.draw.rect(self.sc, (50, 10, 200), (x, y, config.cell_size * self.player.zoom, config.cell_size * self.player.zoom))  
+                            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                                pass
+                            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                                pass
+                            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                                pass
+                            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                                pass
+                            elif big_chank[f'{x}, {y}'] == 'cuprum':
+                                pass
+                            else:
+                                pass
+
+            else:
+                pass
